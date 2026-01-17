@@ -24,13 +24,14 @@ parse_version() {
     echo "$major $minor $patch"
 }
 
-# Compute next minor version
-next_minor_version() {
+# Compute next patch version
+next_patch_version() {
     local major="$1"
     local minor="$2"
+    local patch="$3"
 
-    minor=$((minor + 1))
-    echo "v${major}.${minor}.0"
+    patch=$((patch + 1))
+    echo "v${major}.${minor}.${patch}"
 }
 
 # Main script
@@ -46,26 +47,26 @@ else
     echo "Latest version tag: $latest_tag"
 
     read -r major minor patch <<< "$(parse_version "$latest_tag")"
-    new_tag=$(next_minor_version "$major" "$minor")
+    new_tag=$(next_patch_version "$major" "$minor" "$patch")
 
-    echo "Next minor version: $new_tag"
+    echo "Next patch version: $new_tag"
 fi
 
-# Create the tag
+# Create an annotated tag
 echo ""
 echo "Creating tag: $new_tag"
-git tag "$new_tag"
+git tag -a "$new_tag" -m "Release $new_tag"
 echo "Tag $new_tag created locally."
 
 # Ask for user consent before pushing
 echo ""
-read -p "Do you want to push the tag '$new_tag' to the remote repository? (y/N): " consent
+read -p "Do you want to push the branch and tag '$new_tag' to the remote repository? (y/N): " consent
 
 if [[ "$consent" =~ ^[Yy]$ ]]; then
-    echo "Pushing tag to remote..."
-    git push origin "$new_tag"
-    echo "Tag $new_tag pushed successfully!"
+    echo "Pushing branch and tag to remote..."
+    git push --follow-tags
+    echo "Branch and tag $new_tag pushed successfully!"
 else
-    echo "Tag push cancelled. The tag '$new_tag' exists locally."
-    echo "You can push it later with: git push origin $new_tag"
+    echo "Push cancelled. The tag '$new_tag' exists locally."
+    echo "You can push later with: git push --follow-tags"
 fi
