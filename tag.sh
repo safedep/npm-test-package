@@ -64,9 +64,10 @@ read -p "Do you want to push the branch and tag '$new_tag' to the remote reposit
 
 if [[ "$consent" =~ ^[Yy]$ ]]; then
     echo "Pushing branch and tag to remote..."
-    git push --follow-tags
+    git push
+    git push origin "$new_tag"
     echo "Branch and tag $new_tag pushed successfully!"
 else
     echo "Push cancelled. The tag '$new_tag' exists locally."
-    echo "You can push later with: git push --follow-tags"
+    echo "You can push later with: git push && git push origin $new_tag"
 fi
