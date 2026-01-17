@@ -1,6 +1,5 @@
 {
   "name": "safedep-test-pkg",
-  "version": "0.0.1",
   "description": "Test npm Package",
   "main": "main.js",
   "scripts": {
